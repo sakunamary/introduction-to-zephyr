@@ -1,23 +1,26 @@
 # Zephyr development image for Espressif targets (e.g. ESP32)
-
+# update on Jan 18 2026
 # Settings
 ARG DEBIAN_VERSION=stable-20241016-slim
 ARG PASSWORD="zephyr"
 # Zephyr 3.7.0 is not working with ESP32S3, see: https://github.com/zephyrproject-rtos/zephyr/issues/71397
-#ARG ZEPHYR_RTOS_VERSION=3.7.0
-ARG ZEPHYR_RTOS_COMMIT=26603cefaf41298c417f2eee834ed40d9ab35d3a
-ARG ZEPHYR_SDK_VERSION=0.16.8
-ARG VS_CODE_SERVER_VERSION=4.93.1
+#ARG ZEPHYR_RTOS_VERSION=4.3.0
+ARG ZEPHYR_RTOS_COMMIT=035d0267416c0b62452e0de0a18ad3d8ce10bb88
+ARG ZEPHYR_SDK_VERSION=0.17.4
+ARG VS_CODE_SERVER_VERSION=4.108.1
 ARG VS_CODE_SERVER_PORT=8800
-ARG VS_CODE_EXT_CPPTOOLS_VERSION=1.22.10
+ARG VS_CODE_EXT_CPPTOOLS_VERSION=1.29.3
 ARG VS_CODE_EXT_HEX_EDITOR_VERSION=1.11.1
-ARG VS_CODE_EXT_CMAKETOOLS_VERSION=1.19.52
-ARG VS_CODE_EXT_NRF_DEVICETREE_VERSION=2024.9.26
+ARG VS_CODE_EXT_CMAKETOOLS_VERSION=1.21.36
+ARG VS_CODE_EXT_NRF_DEVICETREE_VERSION=2026.1.448
 ARG TOOLCHAIN_LIST="-t xtensa-espressif_esp32_zephyr-elf -t xtensa-espressif_esp32s2_zephyr-elf -t xtensa-espressif_esp32s3_zephyr-elf"
 ARG WGET_ARGS="-q --show-progress --progress=bar:force:noscroll"
 ARG VIRTUAL_ENV=/opt/venv
 
 #-------------------------------------------------------------------------------
+
+RUN echo "1.Staring Making The Docker Image"
+
 # Base Image and Dependencies
 
 # Use Debian as the base image
@@ -54,6 +57,7 @@ RUN if [ "$TARGETARCH" = "amd64" ] || [ "$TARGETARCH" = "arm64" ]; then \
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install base packages
+RUN echo "2.Staring Install base packages"
 RUN apt-get -y update && \
     apt-get install --no-install-recommends -y \
         dos2unix \
@@ -110,7 +114,7 @@ EXPOSE 22
 
 #-------------------------------------------------------------------------------
 # Zephyr RTOS
-
+RUN echo "3.Staring Install Zephyr"
 # Set Zephyr environment variables
 ENV ZEPHYR_RTOS_VERSION=${ZEPHYR_RTOS_VERSION}
 
@@ -135,7 +139,7 @@ RUN cd /opt/toolchains && \
 
 #-------------------------------------------------------------------------------
 # Zephyr SDK
-
+RUN echo "4.Staring Install Zephyr SDK"
 # Set environment variables
 ENV ZEPHYR_SDK_VERSION=${ZEPHYR_SDK_VERSION}
 
@@ -158,7 +162,7 @@ RUN cd /opt/toolchains/zephyr-sdk-${ZEPHYR_SDK_VERSION} && \
 
 #-------------------------------------------------------------------------------
 # VS Code Server
-
+RUN echo "Staring Install VS Code Server"
 # Set VS Code Server environment variables
 ENV VS_CODE_SERVER_VERSION=${VS_CODE_SERVER_VERSION}
 ENV VS_CODE_SERVER_PORT=${VS_CODE_SERVER_PORT}
@@ -224,3 +228,4 @@ COPY scripts/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh && \
     dos2unix /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
+
