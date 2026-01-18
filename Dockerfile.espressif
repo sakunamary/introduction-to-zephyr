@@ -4,7 +4,7 @@
 ARG DEBIAN_VERSION=stable-20241016-slim
 ARG PASSWORD="zephyr"
 # Zephyr 3.7.0 is not working with ESP32S3, see: https://github.com/zephyrproject-rtos/zephyr/issues/71397
-#ARG ZEPHYR_RTOS_VERSION=4.3.0
+ARG ZEPHYR_RTOS_VERSION=4.3.0
 ARG ZEPHYR_RTOS_COMMIT=035d0267416c0b62452e0de0a18ad3d8ce10bb88
 ARG ZEPHYR_SDK_VERSION=0.17.4
 ARG VS_CODE_SERVER_VERSION=4.108.1
@@ -22,7 +22,9 @@ ARG VIRTUAL_ENV=/opt/venv
 # Base Image and Dependencies
 
 # Use Debian as the base image
-FROM  6xhu1vvmnje6s5.xuanyuan.run/library/debian:${DEBIAN_VERSION}
+
+#  FROM  debian:${DEBIAN_VERSION}
+ FROM  6xhu1vvmnje6s5.xuanyuan.run/library/debian:${DEBIAN_VERSION}
 
 # Redeclare arguments after FROM
 ARG PASSWORD
@@ -117,7 +119,8 @@ ENV ZEPHYR_RTOS_VERSION=${ZEPHYR_RTOS_VERSION}
 
 # Install Zephyr
 RUN cd /opt/toolchains && \
-    git clone https://github.com/zephyrproject-rtos/zephyr.git && \
+     git clone https://gitcode.com/GitHub_Trending/ze/zephyr.git && \
+#    git clone https://github.com/zephyrproject-rtos/zephyr.git && \
     cd zephyr && \
     git checkout ${ZEPHYR_RTOS_COMMIT} && \
     python3 -m pip install -r scripts/requirements-base.txt
