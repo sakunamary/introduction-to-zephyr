@@ -1,9 +1,9 @@
 # Zephyr development image for Espressif targets (e.g. ESP32)
-# update on Jan 18 2026
+
 # Settings
-ARG DEBIAN_VERSION=stable-20241016-slim
+#ARG DEBIAN_VERSION=stable-20241016-slim
 ARG PASSWORD="zephyr"
-# Zephyr 3.7.0 is not working with ESP32S3, see: https://github.com/zephyrproject-rtos/zephyr/issues/71397
+# update on Jan 18 2026
 ARG ZEPHYR_RTOS_VERSION=4.3.0
 ARG ZEPHYR_RTOS_COMMIT=0601335d85ed22439671a25a23b8d550fb4893fd
 ARG ZEPHYR_SDK_VERSION=0.17.4
@@ -24,7 +24,8 @@ ARG VIRTUAL_ENV=/opt/venv
 # Use Debian as the base image
 
 #  FROM  debian:${DEBIAN_VERSION}
- FROM  6xhu1vvmnje6s5.xuanyuan.run/library/debian:${DEBIAN_VERSION}
+#FROM zephyrproject-rtos/zephyr-build:main
+FROM  6xhu1vvmnje6s5.xuanyuan.runzephyrproject-rtos/zephyr-build:main
 
 # Redeclare arguments after FROM
 ARG PASSWORD
@@ -122,7 +123,7 @@ RUN cd /opt/toolchains && \
     git clone https://gitee.com/sakunamary/zephyr.git && \
 #    git clone https://github.com/zephyrproject-rtos/zephyr.git && \
     cd zephyr && \
-    git checkout ${ZEPHYR_RTOS_COMMIT} && \
+    #git checkout ${ZEPHYR_RTOS_COMMIT} && \
     python3 -m pip install -r scripts/requirements-base.txt
 
 # Override the west manifest to only install necessary modules
@@ -144,10 +145,17 @@ RUN cd /opt/toolchains && \
 ENV ZEPHYR_SDK_VERSION=${ZEPHYR_SDK_VERSION}
 
 # Install minimal Zephyr SDK
+#RUN cd /opt/toolchains && \
+#    wget ${WGET_ARGS} https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZEPHYR_SDK_VERSION}/zephyr-sdk-${ZEPHYR_SDK_VERSION}_linux-${HOSTTYPE}_minimal.tar.xz && \
+#    tar xf zephyr-sdk-${ZEPHYR_SDK_VERSION}_linux-${HOSTTYPE}_minimal.tar.xz && \
+#    rm zephyr-sdk-${ZEPHYR_SDK_VERSION}_linux-${HOSTTYPE}_minimal.tar.xz
+
+# Install Zephyr SDK
 RUN cd /opt/toolchains && \
-    wget ${WGET_ARGS} https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZEPHYR_SDK_VERSION}/zephyr-sdk-${ZEPHYR_SDK_VERSION}_linux-${HOSTTYPE}_minimal.tar.xz && \
-    tar xf zephyr-sdk-${ZEPHYR_SDK_VERSION}_linux-${HOSTTYPE}_minimal.tar.xz && \
-    rm zephyr-sdk-${ZEPHYR_SDK_VERSION}_linux-${HOSTTYPE}_minimal.tar.xz
+	wget ${WGET_ARGS} https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v${ZSDK_VERSION}/zephyr-sdk-${ZSDK_VERSION}_linux-${HOSTTYPE}.tar.xz && \
+	tar xf zephyr-sdk-${ZSDK_VERSION}_linux-${HOSTTYPE}.tar.xz && \
+	rm zephyr-sdk-${ZSDK_VERSION}_linux-${HOSTTYPE}.tar.xz
+
 
 # Install Zephyr SDK for the specified toolchains
 RUN cd /opt/toolchains/zephyr-sdk-${ZEPHYR_SDK_VERSION} && \
