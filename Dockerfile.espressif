@@ -25,7 +25,7 @@ ARG VIRTUAL_ENV=/opt/venv
 
 #  FROM  debian:${DEBIAN_VERSION}
 #FROM zephyrproject-rtos/zephyr-build:main
-FROM  6xhu1vvmnje6s5.xuanyuan.runzephyrproject-rtos/zephyr-build:main
+FROM  6xhu1vvmnje6s5.xuanyuan.run/zephyrprojectrtos/zephyr-build:latest
 
 # Redeclare arguments after FROM
 ARG PASSWORD
